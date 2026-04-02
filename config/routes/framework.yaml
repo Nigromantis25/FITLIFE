@@ -1,4 +1,2 @@
-when@dev:
-    _errors:
-        resource: '@FrameworkBundle/Resources/config/routing/errors.php'
-        prefix: /_error
+# framework.yaml is intentionally empty for Symfony 6 route defaults.
+# Add custom routes here if needed.

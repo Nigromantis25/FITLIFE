@@ -1,0 +1,25 @@
+{% extends 'layouts/recepcionista.html.twig' %}
+
+{% block title %}Reportes | Recepcionista{% endblock %}
+
+{% block content %}
+  <h2>Reportes de Asistencia</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:20px;">
+    <div style="background:#181818;padding:18px;border-radius:12px;border:1px solid #333;">
+      <div style="font-size:26px;font-weight:700;color:#ffea00;">{{ reportes.asistencias_ultima_semana }}</div>
+      <div style="color:#bbb;">Asistencias última semana</div>
+    </div>
+    <div style="background:#181818;padding:18px;border-radius:12px;border:1px solid #333;">
+      <div style="font-size:26px;font-weight:700;color:#ffea00;">{{ reportes.clientes_nuevos }}</div>
+      <div style="color:#bbb;">Clientes nuevos</div>
+    </div>
+    <div style="background:#181818;padding:18px;border-radius:12px;border:1px solid #333;">
+      <div style="font-size:26px;font-weight:700;color:#ffea00;">{{ reportes.ingresos }} bs</div>
+      <div style="color:#bbb;">Ingresos</div>
+    </div>
+    <div style="background:#181818;padding:18px;border-radius:12px;border:1px solid #333;">
+      <div style="font-size:26px;font-weight:700;color:#ffea00;">{{ reportes.membresias_activas }}</div>
+      <div style="color:#bbb;">Membresías activas</div>
+    </div>
+  </div>
+{% endblock %}
