@@ -2,49 +2,65 @@
 
 namespace App\Entity;
 
-use App\Repository\MembresiaClienteRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: MembresiaClienteRepository::class)]
-#[ORM\Table(name: 'membresia_cliente')]
+/**
+ * MembresiaCliente
+ *
+ * @ORM\Table(name="membresia_cliente", indexes={@ORM\Index(name="IDX_B62AD012DE734E51", columns={"cliente_id"}), @ORM\Index(name="IDX_B62AD012E899029B", columns={"plan_id"})})
+ * @ORM\Entity
+ */
 class MembresiaCliente
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $id = null;
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
 
-    #[ORM\ManyToOne(targetEntity: Cliente::class)]
-    #[ORM\JoinColumn(name: 'cliente_id', referencedColumnName: 'id', nullable: false)]
-    private Cliente $cliente;
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fecha_inicio", type="date", nullable=false)
+     */
+    private $fechaInicio;
 
-    #[ORM\ManyToOne(targetEntity: MembresiaPlan::class)]
-    #[ORM\JoinColumn(name: 'plan_id', referencedColumnName: 'id', nullable: false)]
-    private MembresiaPlan $plan;
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fecha_vencimiento", type="date", nullable=false)
+     */
+    private $fechaVencimiento;
 
-    #[ORM\Column(type: 'date')]
-    private \DateTimeInterface $fechaInicio;
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="estado", type="boolean", nullable=false)
+     */
+    private $estado;
 
-    #[ORM\Column(type: 'date')]
-    private \DateTimeInterface $fechaVencimiento;
+    /**
+     * @var \Cliente
+     *
+     * @ORM\ManyToOne(targetEntity="Cliente")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="cliente_id", referencedColumnName="id")
+     * })
+     */
+    private $cliente;
 
-    #[ORM\Column(type: 'boolean')]
-    private bool $estado = true;
+    /**
+     * @var \MembresiaPlan
+     *
+     * @ORM\ManyToOne(targetEntity="MembresiaPlan")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="plan_id", referencedColumnName="id")
+     * })
+     */
+    private $plan;
 
-    public function getId(): ?int { return $this->id; }
 
-    public function getCliente(): Cliente { return $this->cliente; }
-    public function setCliente(Cliente $c): static { $this->cliente = $c; return $this; }
-
-    public function getPlan(): MembresiaPlan { return $this->plan; }
-    public function setPlan(MembresiaPlan $p): static { $this->plan = $p; return $this; }
-
-    public function getFechaInicio(): \DateTimeInterface { return $this->fechaInicio; }
-    public function setFechaInicio(\DateTimeInterface $f): static { $this->fechaInicio = $f; return $this; }
-
-    public function getFechaVencimiento(): \DateTimeInterface { return $this->fechaVencimiento; }
-    public function setFechaVencimiento(\DateTimeInterface $f): static { $this->fechaVencimiento = $f; return $this; }
-
-    public function isEstado(): bool { return $this->estado; }
-    public function setEstado(bool $e): static { $this->estado = $e; return $this; }
 }

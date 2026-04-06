@@ -2,55 +2,72 @@
 
 namespace App\Entity;
 
-use App\Repository\PagoRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: PagoRepository::class)]
-#[ORM\Table(name: 'pago')]
+/**
+ * Pago
+ *
+ * @ORM\Table(name="pago", indexes={@ORM\Index(name="IDX_F4DF5F3E2360BE51", columns={"membresia_cliente_id"}), @ORM\Index(name="IDX_F4DF5F3E5D430949", columns={"personal_id"})})
+ * @ORM\Entity
+ */
 class Pago
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $id = null;
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
 
-    #[ORM\ManyToOne(targetEntity: MembresiaCliente::class)]
-    #[ORM\JoinColumn(name: 'membresia_cliente_id', referencedColumnName: 'id', nullable: false)]
-    private MembresiaCliente $membresiaCliente;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="monto", type="decimal", precision=10, scale=2, nullable=false)
+     */
+    private $monto;
 
-    #[ORM\ManyToOne(targetEntity: Personal::class)]
-    #[ORM\JoinColumn(name: 'personal_id', referencedColumnName: 'id', nullable: false)]
-    private Personal $personal;
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fecha_pago", type="date", nullable=false)
+     */
+    private $fechaPago;
 
-    #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
-    private string $monto;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="metodo_pago", type="string", length=50, nullable=false)
+     */
+    private $metodoPago;
 
-    #[ORM\Column(type: 'date')]
-    private \DateTimeInterface $fechaPago;
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="estado", type="boolean", nullable=false)
+     */
+    private $estado;
 
-    #[ORM\Column(type: 'string', length: 50)]
-    private string $metodoPago;
+    /**
+     * @var \MembresiaCliente
+     *
+     * @ORM\ManyToOne(targetEntity="MembresiaCliente")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="membresia_cliente_id", referencedColumnName="id")
+     * })
+     */
+    private $membresiaCliente;
 
-    #[ORM\Column(type: 'boolean')]
-    private bool $estado = true;
+    /**
+     * @var \Personal
+     *
+     * @ORM\ManyToOne(targetEntity="Personal")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="personal_id", referencedColumnName="id")
+     * })
+     */
+    private $personal;
 
-    public function getId(): ?int { return $this->id; }
 
-    public function getMembresiaCliente(): MembresiaCliente { return $this->membresiaCliente; }
-    public function setMembresiaCliente(MembresiaCliente $m): static { $this->membresiaCliente = $m; return $this; }
-
-    public function getPersonal(): Personal { return $this->personal; }
-    public function setPersonal(Personal $p): static { $this->personal = $p; return $this; }
-
-    public function getMonto(): string { return $this->monto; }
-    public function setMonto(string $m): static { $this->monto = $m; return $this; }
-
-    public function getFechaPago(): \DateTimeInterface { return $this->fechaPago; }
-    public function setFechaPago(\DateTimeInterface $f): static { $this->fechaPago = $f; return $this; }
-
-    public function getMetodoPago(): string { return $this->metodoPago; }
-    public function setMetodoPago(string $m): static { $this->metodoPago = $m; return $this; }
-
-    public function isEstado(): bool { return $this->estado; }
-    public function setEstado(bool $e): static { $this->estado = $e; return $this; }
 }

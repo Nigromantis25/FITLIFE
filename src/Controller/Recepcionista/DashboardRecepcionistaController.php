@@ -2,6 +2,10 @@
 
 namespace App\Controller\Recepcionista;
 
+use App\Repository\AsistenciaRepository;
+use App\Repository\ClienteRepository;
+use App\Repository\MembresiaClienteRepository;
+use App\Repository\PagoRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -12,30 +16,30 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class DashboardRecepcionistaController extends AbstractController
 {
     #[Route('/dashboard', name: 'recepcionista_dashboard')]
-    public function index(): Response
+    public function index(AsistenciaRepository $asistenciaRepo, ClienteRepository $clienteRepo): Response
     {
         /** @var \App\Entity\Personal $user */
         $user = $this->getUser();
 
+        $asistenciasHoy = $asistenciaRepo->findByToday();
+        $clientesActivos = $asistenciaRepo->findActiveClientes();
+
         return $this->render('recepcionista/dashboard.html.twig', [
             'usuario' => $user,
             'stats' => [
-                'clientes_hoy'    => 14,
-                'pagos_hoy'       => 7,
-                'membresias_venc' => 5,
-                'asistencias'     => 31,
+                'clientes_hoy'    => count($asistenciasHoy),
+                'pagos_hoy'       => 7, // TODO: Implementar contador de pagos
+                'membresias_venc' => 5, // TODO: Implementar contador de membresías vencidas
+                'asistencias'     => $asistenciaRepo->countToday(),
             ],
+            'clientes_activos' => $clientesActivos,
         ]);
     }
 
     #[Route('/asistencias', name: 'recepcionista_asistencias')]
-    public function asistencias(): Response
+    public function asistencias(AsistenciaRepository $asistenciaRepo): Response
     {
-        $asistencias = [
-            ['cliente' => 'Marta López', 'fecha' => '2026-04-01', 'entrada' => '08:05', 'salida' => '09:20'],
-            ['cliente' => 'Carlos Pérez', 'fecha' => '2026-04-01', 'entrada' => '09:10', 'salida' => '10:25'],
-            ['cliente' => 'Ana Gómez', 'fecha' => '2026-04-01', 'entrada' => '10:15', 'salida' => '11:30'],
-        ];
+        $asistencias = $asistenciaRepo->findAllWithClientes();
 
         return $this->render('recepcionista/asistencias.html.twig', [
             'asistencias' => $asistencias,
@@ -43,13 +47,18 @@ class DashboardRecepcionistaController extends AbstractController
     }
 
     #[Route('/reportes', name: 'recepcionista_reportes')]
-    public function reportes(): Response
+    public function reportes(AsistenciaRepository $asistenciaRepo, ClienteRepository $clienteRepo): Response
     {
+        $asistenciasUltimaSemana = $asistenciaRepo->findByLastDays(7);
+        $totalClientes = $clienteRepo->countActive();
+        $clientesActivos = $asistenciaRepo->findActiveClientes();
+
         $reportes = [
-            'asistencias_ultima_semana' => 184,
-            'clientes_nuevos'           => 23,
-            'ingresos'                  => 5870,
-            'membresias_activas'        => 198,
+            'asistencias_ultima_semana' => count($asistenciasUltimaSemana),
+            'clientes_nuevos'           => 0, // TODO: Implementar contador de clientes nuevos
+            'ingresos'                  => 0, // TODO: Implementar suma de pagos
+            'clientes_activos'          => count($clientesActivos),
+            'clientes_totales'          => $totalClientes,
         ];
 
         return $this->render('recepcionista/reportes.html.twig', [

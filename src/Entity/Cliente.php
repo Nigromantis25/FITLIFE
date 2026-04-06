@@ -2,59 +2,73 @@
 
 namespace App\Entity;
 
-use App\Repository\ClienteRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ClienteRepository::class)]
-#[ORM\Table(name: 'cliente')]
+/**
+ * Cliente
+ *
+ * @ORM\Table(name="cliente", uniqueConstraints={@ORM\UniqueConstraint(name="UNIQ_F41C9B257BF39BE0", columns={"cedula"})})
+ * @ORM\Entity
+ */
 class Cliente
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $id = null;
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
 
-    #[ORM\Column(type: 'string', length: 100)]
-    private string $nombre;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nombre", type="string", length=100, nullable=false)
+     */
+    private $nombre;
 
-    #[ORM\Column(type: 'string', length: 100)]
-    private string $apellido;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="apellido", type="string", length=100, nullable=false)
+     */
+    private $apellido;
 
-    #[ORM\Column(type: 'string', length: 20, unique: true)]
-    private string $cedula;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="cedula", type="string", length=20, nullable=false)
+     */
+    private $cedula;
 
-    #[ORM\Column(type: 'string', length: 150, nullable: true)]
-    private ?string $correo = null;
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="correo", type="string", length=150, nullable=true)
+     */
+    private $correo;
 
-    #[ORM\Column(type: 'string', length: 20, nullable: true)]
-    private ?string $telefono = null;
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="telefono", type="string", length=20, nullable=true)
+     */
+    private $telefono;
 
-    #[ORM\Column(type: 'date')]
-    private \DateTimeInterface $fechaRegistro;
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fecha_registro", type="date", nullable=false)
+     */
+    private $fechaRegistro;
 
-    #[ORM\Column(type: 'boolean')]
-    private bool $estado = true;
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="estado", type="boolean", nullable=false)
+     */
+    private $estado;
 
-    public function getId(): ?int { return $this->id; }
 
-    public function getNombre(): string { return $this->nombre; }
-    public function setNombre(string $n): static { $this->nombre = $n; return $this; }
-
-    public function getApellido(): string { return $this->apellido; }
-    public function setApellido(string $a): static { $this->apellido = $a; return $this; }
-
-    public function getCedula(): string { return $this->cedula; }
-    public function setCedula(string $c): static { $this->cedula = $c; return $this; }
-
-    public function getCorreo(): ?string { return $this->correo; }
-    public function setCorreo(?string $correo): static { $this->correo = $correo; return $this; }
-
-    public function getTelefono(): ?string { return $this->telefono; }
-    public function setTelefono(?string $t): static { $this->telefono = $t; return $this; }
-
-    public function getFechaRegistro(): \DateTimeInterface { return $this->fechaRegistro; }
-    public function setFechaRegistro(\DateTimeInterface $f): static { $this->fechaRegistro = $f; return $this; }
-
-    public function isEstado(): bool { return $this->estado; }
-    public function setEstado(bool $e): static { $this->estado = $e; return $this; }
 }

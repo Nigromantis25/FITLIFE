@@ -2,38 +2,102 @@
 
 namespace App\Entity;
 
-use App\Repository\AsistenciaRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: AsistenciaRepository::class)]
-#[ORM\Table(name: 'asistencia')]
+/**
+ * Asistencia
+ *
+ * @ORM\Table(name="asistencia", indexes={@ORM\Index(name="IDX_D8264A8DDE734E51", columns={"cliente_id"})})
+ * @ORM\Entity
+ */
 class Asistencia
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $id = null;
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
 
-    #[ORM\ManyToOne(targetEntity: Cliente::class)]
-    #[ORM\JoinColumn(name: 'cliente_id', referencedColumnName: 'id', nullable: false)]
-    private Cliente $cliente;
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fecha", type="date", nullable=false)
+     */
+    private $fecha;
 
-    #[ORM\Column(type: 'date')]
-    private \DateTimeInterface $fecha;
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="hora_entrada", type="time", nullable=false)
+     */
+    private $horaEntrada;
 
-    #[ORM\Column(type: 'time')]
-    private \DateTimeInterface $horaEntrada;
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="hora_salida", type="time", nullable=true)
+     */
+    private $horaSalida;
 
-    #[ORM\Column(type: 'time', nullable: true)]
-    private ?\DateTimeInterface $horaSalida = null;
+    /**
+     * @var \App\Entity\Cliente
+     *
+     * @ORM\ManyToOne(targetEntity="Cliente")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="cliente_id", referencedColumnName="id")
+     * })
+     */
+    private $cliente;
 
-    public function getId(): ?int { return $this->id; }
-    public function getCliente(): Cliente { return $this->cliente; }
-    public function setCliente(Cliente $c): static { $this->cliente = $c; return $this; }
-    public function getFecha(): \DateTimeInterface { return $this->fecha; }
-    public function setFecha(\DateTimeInterface $f): static { $this->fecha = $f; return $this; }
-    public function getHoraEntrada(): \DateTimeInterface { return $this->horaEntrada; }
-    public function setHoraEntrada(\DateTimeInterface $h): static { $this->horaEntrada = $h; return $this; }
-    public function getHoraSalida(): ?\DateTimeInterface { return $this->horaSalida; }
-    public function setHoraSalida(?\DateTimeInterface $h): static { $this->horaSalida = $h; return $this; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getFecha(): ?\DateTimeInterface
+    {
+        return $this->fecha;
+    }
+
+    public function setFecha(\DateTimeInterface $fecha): self
+    {
+        $this->fecha = $fecha;
+        return $this;
+    }
+
+    public function getHoraEntrada(): ?\DateTimeInterface
+    {
+        return $this->horaEntrada;
+    }
+
+    public function setHoraEntrada(\DateTimeInterface $horaEntrada): self
+    {
+        $this->horaEntrada = $horaEntrada;
+        return $this;
+    }
+
+    public function getHoraSalida(): ?\DateTimeInterface
+    {
+        return $this->horaSalida;
+    }
+
+    public function setHoraSalida(?\DateTimeInterface $horaSalida): self
+    {
+        $this->horaSalida = $horaSalida;
+        return $this;
+    }
+
+    public function getCliente(): ?Cliente
+    {
+        return $this->cliente;
+    }
+
+    public function setCliente(?Cliente $cliente): self
+    {
+        $this->cliente = $cliente;
+        return $this;
+    }
 }

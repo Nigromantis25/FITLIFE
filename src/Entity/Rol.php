@@ -2,27 +2,31 @@
 
 namespace App\Entity;
 
-use App\Repository\RolRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: RolRepository::class)]
-#[ORM\Table(name: 'rol')]
+/**
+ * Rol
+ *
+ * @ORM\Table(name="rol")
+ * @ORM\Entity
+ */
 class Rol
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $id = null;
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
 
-    #[ORM\Column(type: 'string', length: 100)]
-    private string $nombre;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nombre", type="string", length=100, nullable=false)
+     */
+    private $nombre;
 
-    public function getId(): ?int { return $this->id; }
 
-    public function getNombre(): string { return $this->nombre; }
-    public function setNombre(string $nombre): static
-    {
-        $this->nombre = $nombre;
-        return $this;
-    }
 }

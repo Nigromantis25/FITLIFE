@@ -2,41 +2,52 @@
 
 namespace App\Entity;
 
-use App\Repository\MembresiaPlanRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: MembresiaPlanRepository::class)]
-#[ORM\Table(name: 'membresia_plan')]
+/**
+ * MembresiaPlan
+ *
+ * @ORM\Table(name="membresia_plan")
+ * @ORM\Entity
+ */
 class MembresiaPlan
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $id = null;
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
 
-    #[ORM\Column(type: 'string', length: 100)]
-    private string $nombrePlan;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nombre_plan", type="string", length=100, nullable=false)
+     */
+    private $nombrePlan;
 
-    #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
-    private string $costo;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="costo", type="decimal", precision=10, scale=2, nullable=false)
+     */
+    private $costo;
 
-    #[ORM\Column(type: 'integer')]
-    private int $duracionDias;
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="duracion_dias", type="integer", nullable=false)
+     */
+    private $duracionDias;
 
-    #[ORM\Column(type: 'boolean')]
-    private bool $estado = true;
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="estado", type="boolean", nullable=false)
+     */
+    private $estado;
 
-    public function getId(): ?int { return $this->id; }
 
-    public function getNombrePlan(): string { return $this->nombrePlan; }
-    public function setNombrePlan(string $n): static { $this->nombrePlan = $n; return $this; }
-
-    public function getCosto(): string { return $this->costo; }
-    public function setCosto(string $costo): static { $this->costo = $costo; return $this; }
-
-    public function getDuracionDias(): int { return $this->duracionDias; }
-    public function setDuracionDias(int $d): static { $this->duracionDias = $d; return $this; }
-
-    public function isEstado(): bool { return $this->estado; }
-    public function setEstado(bool $e): static { $this->estado = $e; return $this; }
 }

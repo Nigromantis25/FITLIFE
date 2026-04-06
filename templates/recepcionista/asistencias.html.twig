@@ -7,21 +7,49 @@
   <table style="width:100%;border-collapse:collapse;margin-top:20px;">
     <thead>
       <tr style="background:#222;color:#fff;">
-        <th style="padding:10px;border:1px solid #333;">Cliente</th>
-        <th style="padding:10px;border:1px solid #333;">Fecha</th>
-        <th style="padding:10px;border:1px solid #333;">Entrada</th>
-        <th style="padding:10px;border:1px solid #333;">Salida</th>
+        <th style="padding:10px;border:1px solid #333;text-align:left;">Cliente</th>
+        <th style="padding:10px;border:1px solid #333;text-align:left;">Cédula</th>
+        <th style="padding:10px;border:1px solid #333;text-align:left;">Fecha</th>
+        <th style="padding:10px;border:1px solid #333;text-align:center;">Entrada</th>
+        <th style="padding:10px;border:1px solid #333;text-align:center;">Salida</th>
       </tr>
     </thead>
     <tbody>
-      {% for item in asistencias %}
-      <tr style="border:1px solid #333;">
-        <td style="padding:10px;border:1px solid #333;">{{ item.cliente }}</td>
-        <td style="padding:10px;border:1px solid #333;">{{ item.fecha }}</td>
-        <td style="padding:10px;border:1px solid #333;">{{ item.entrada }}</td>
-        <td style="padding:10px;border:1px solid #333;">{{ item.salida }}</td>
-      </tr>
-      {% endfor %}
+      {% if asistencias|length > 0 %}
+        {% for asistencia in asistencias %}
+        <tr style="border:1px solid #333;">
+          <td style="padding:10px;border:1px solid #333;">
+            {{ asistencia.cliente.nombre }} {{ asistencia.cliente.apellido }}
+          </td>
+          <td style="padding:10px;border:1px solid #333;">
+            {{ asistencia.cliente.cedula }}
+          </td>
+          <td style="padding:10px;border:1px solid #333;">
+            {{ asistencia.fecha|date('d/m/Y') }}
+          </td>
+          <td style="padding:10px;border:1px solid #333;text-align:center;">
+            {% if asistencia.horaEntrada %}
+              {{ asistencia.horaEntrada|date('H:i:s') }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td style="padding:10px;border:1px solid #333;text-align:center;">
+            {% if asistencia.horaSalida %}
+              <span style="color:#4cff4c;">{{ asistencia.horaSalida|date('H:i:s') }}</span>
+            {% else %}
+              <span style="color:#ffaa00;">En el gimnasio</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr style="border:1px solid #333;">
+          <td colspan="5" style="padding:20px;border:1px solid #333;text-align:center;color:#999;">
+            No hay registros de asistencia
+          </td>
+        </tr>
+      {% endif %}
     </tbody>
   </table>
 {% endblock %}

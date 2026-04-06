@@ -4,17 +4,93 @@
 
 {% block body %}
 <section style="min-height:100vh;padding:80px 20px;background:#070707;color:#f5f5f5;">
-  <div style="max-width:960px;margin:0 auto;text-align:center;">
-    <h1 style="font-family:'Bebas Neue',sans-serif;font-size:48px;margin-bottom:16px;">Panel del Gimnasio</h1>
-    <p style="color:#d3d3d3;font-size:18px;margin-bottom:40px;">Accede a asistencias, reportes y el dashboard de control para tu equipo.</p>
+  <div style="max-width:960px;margin:0 auto;">
+    <h1 style="font-family:'Bebas Neue',sans-serif;font-size:48px;margin-bottom:16px;text-align:center;">Panel del Gimnasio</h1>
+    <p style="color:#d3d3d3;font-size:18px;margin-bottom:40px;text-align:center;">Accede a asistencias, reportes y el dashboard de control para tu equipo.</p>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;">
-      <a href="{{ path('recepcionista_dashboard') }}" class="btn-primary" style="display:flex;justify-content:center;align-items:center;height:120px;">Dashboard</a>
-      <a href="{{ path('recepcionista_asistencias') }}" class="btn-primary" style="display:flex;justify-content:center;align-items:center;height:120px;">Asistencias</a>
-      <a href="{{ path('recepcionista_reportes') }}" class="btn-primary" style="display:flex;justify-content:center;align-items:center;height:120px;">Reportes</a>
+    <!-- Sección de Registro de Asistencia -->
+    <div style="background:#1a1a1a;border:1px solid #333;border-radius:12px;padding:30px;margin-bottom:40px;">
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:24px;margin-bottom:20px;">Registrar Entrada/Salida</h2>
+      <p style="color:#aaa;margin-bottom:20px;">Ingresa la cédula del cliente para registrar entrada o salida</p>
+      
+      <form id="formAsistencia" style="display:flex;gap:10px;margin-bottom:20px;">
+        <input 
+          type="text" 
+          id="cedula" 
+          placeholder="Ingresa cédula del cliente..." 
+          style="flex:1;padding:12px;background:#0a0c12;border:1px solid #333;border-radius:6px;color:#fff;font-size:16px;"
+          autofocus
+        >
+        <button 
+          type="submit" 
+          style="padding:12px 30px;background:#58a6ff;color:#000;border:none;border-radius:6px;font-weight:bold;cursor:pointer;">
+          Registrar
+        </button>
+      </form>
+      
+      <div id="resultadoAsistencia" style="display:none;padding:15px;border-radius:6px;background:#0a0c12;border:1px solid #333;"></div>
     </div>
 
-    <p style="margin-top:24px;color:#aaaaaa;font-size:14px;">* Requiere iniciar sesión como recepcionista o admin para ver datos reales</p>
+    <!-- Los tres botones principales -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;">
+      <a href="{{ path('recepcionista_dashboard') }}" class="btn-primary" style="display:flex;justify-content:center;align-items:center;height:120px;background:#1a1a1a;border:2px solid #58a6ff;border-radius:8px;text-decoration:none;color:#fff;font-size:18px;font-weight:bold;transition:all .3s;">Dashboard</a>
+      <a href="{{ path('recepcionista_asistencias') }}" class="btn-primary" style="display:flex;justify-content:center;align-items:center;height:120px;background:#1a1a1a;border:2px solid #58a6ff;border-radius:8px;text-decoration:none;color:#fff;font-size:18px;font-weight:bold;transition:all .3s;">Asistencias</a>
+      <a href="{{ path('recepcionista_reportes') }}" class="btn-primary" style="display:flex;justify-content:center;align-items:center;height:120px;background:#1a1a1a;border:2px solid #58a6ff;border-radius:8px;text-decoration:none;color:#fff;font-size:18px;font-weight:bold;transition:all .3s;">Reportes</a>
+    </div>
+
+    <p style="margin-top:24px;color:#aaaaaa;font-size:14px;text-align:center;">* Requiere iniciar sesión como recepcionista o admin para ver datos reales</p>
   </div>
 </section>
-{% endblock %}
+
+<script>
+document.getElementById('formAsistencia').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const cedula = document.getElementById('cedula').value.trim();
+  
+  if (!cedula) {
+    alert('Por favor ingresa una cédula');
+    return;
+  }
+  
+      const url = `${window.location.origin}/api/asistencia/registrar`;
+      
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ cedula: cedula })
+        });
+
+        const text = await response.text();
+        let data;
+
+        try {
+          data = JSON.parse(text);
+        } catch (parseError) {
+          throw new Error('La respuesta no es JSON. Asegúrate de abrir esta página desde el servidor Symfony en http://127.0.0.1:8001/panel-gimnasio');
+        }
+
+        const resultDiv = document.getElementById('resultadoAsistencia');
+        
+        if (response.ok) {
+          resultDiv.style.display = 'block';
+          resultDiv.style.borderColor = '#4cff4c';
+          resultDiv.style.background = 'rgba(76, 255, 76, 0.1)';
+          resultDiv.innerHTML = `
+            <div style="color:#4cff4c;font-weight:bold;font-size:18px;">✅ ${data.tipo.toUpperCase()}</div>
+            <div style="color:#fff;margin-top:10px;">Cliente: <strong>${data.cliente}</strong></div>
+            <div style="color:#aaa;margin-top:5px;">Hora: ${data.hora}</div>
+          `;
+          document.getElementById('cedula').value = '';
+          setTimeout(() => {
+            resultDiv.style.display = 'none';
+          }, 5000);
+        } else {
+          resultDiv.style.display = 'block';
+          resultDiv.style.borderColor = '#ff4d4d';
+          resultDiv.style.background = 'rgba(255, 77, 77, 0.1)';
+          resultDiv.innerHTML = `
+            <div style="color:#ff8080;font-weight:bold;font-size:18px;">❌ ERROR</div>
+            <div style="color:#ff8080;margin-top:10px;">${data.error || text}</div>
